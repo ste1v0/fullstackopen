@@ -112,3 +112,4 @@ const Persons = ({ filterStatus, filteredArray, list }) => {
 )}
 
 export default App;
+
