@@ -39,25 +39,42 @@ const App = () => {
   const filteredArray = list.filter(x => x.name.toLowerCase().includes(newFilter.toLowerCase()))
 
   const handleSubmit = (event) => {
-    event.preventDefault()
-    const checkIndex = list.findIndex(item => item.name.toLowerCase() === newContact.toLowerCase() || item.number === newPhone)
-
-    if (checkIndex === -1) {
-      const newEntry = {
-        name: newContact,
-        number: newPhone
+    event.preventDefault();
+    const checkEntry = list.findIndex(item => item.number === newPhone);
+    const checkName = list.findIndex(item => item.name.toLowerCase() === newContact.toLowerCase());
+  
+    if (checkEntry === -1) {
+      if (checkName !== -1) {
+        if (window.confirm(`${newContact} is already added to the phonebook, replace the old one with a new one?`)) {
+          const contactToUpdate = list[checkName]
+          const changedContact = { ...contactToUpdate, number: newPhone }
+  
+          phoneService
+            .update(contactToUpdate.id, changedContact)
+            .then(returnedPhone => {
+              setList(list.map(n => n.id !== contactToUpdate.id ? n : returnedPhone));
+            });
+        } else {
+          alert (`No changes`);
+        }
+      } else {
+        const newEntry = {
+          name: newContact,
+          number: newPhone
+        };
+        phoneService
+          .create(newEntry)
+          .then(createdPhone => {
+            setList(list.concat(createdPhone));
+          });
+        setNewContact('');
+        setNewPhone('');
       }
-      phoneService
-        .create(newEntry)
-        .then(createdPhone => {
-          setList(list.concat(createdPhone))
-        })
-      setNewContact('')
-      setNewPhone('')
     } else {
-      alert(`Sorry, ${newContact} ${newPhone} already exists`)
+      alert(`Sorry, ${newPhone} already exists`);
     }
-  }
+  };
+  
 
   const handleDeletion = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
