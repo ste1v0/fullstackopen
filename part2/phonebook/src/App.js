@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import phoneService from './services/phones'
 
 const App = () => {
 
@@ -13,11 +13,11 @@ const App = () => {
   const [filterStatus, setNewFilterStatus] = useState(false)
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setList(response.data)
-    })
+    phoneService
+      .getAll()
+      .then(initialPhones => {
+        setList(initialPhones)
+      })
   }, [])
 
   // Handlers
@@ -43,15 +43,27 @@ const App = () => {
     const checkIndex = list.findIndex(item => item.name.toLowerCase() === newContact.toLowerCase() || item.number === newPhone)
 
     if (checkIndex === -1) {
-      const newObject = {
+      const newEntry = {
         name: newContact,
         number: newPhone
       }
-      setList(list.concat(newObject))
+      phoneService
+        .create(newEntry)
+        .then(createdPhone => {
+          setList(list.concat(createdPhone))
+        })
       setNewContact('')
       setNewPhone('')
     } else {
       alert(`Sorry, ${newContact} ${newPhone} already exists`)
+    }
+  }
+
+  const handleDeletion = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      phoneService
+      .remove(id)
+      setList(list.filter(x => x.id !== id))
     }
   }
 
@@ -70,7 +82,7 @@ const App = () => {
         Numbers
       </h1>
       <ul>
-        <Persons filterStatus={filterStatus} filteredArray={filteredArray} list={list}></Persons>
+        <Persons filterStatus={filterStatus} filteredArray={filteredArray} list={list} handleDeletion={handleDeletion}></Persons>
       </ul>
     </div>
   );
@@ -105,12 +117,12 @@ const PersonForm = ({ handleSubmit, newContact, handleInputChange, newPhone, han
   )
 }
 
-const Persons = ({ filterStatus, filteredArray, list }) => {
+const Persons = ({ filterStatus, filteredArray, list, handleDeletion }) => {
   return (
     <>
     {filterStatus
-      ? filteredArray.map((x, index) => <li key={index}>{x.name} {x.number}</li>)
-      : list.map((x, index) => <li key={index}>{x.name} {x.number}</li>)
+      ? filteredArray.map((x, index) => <li key={index}>{x.name} {x.number} <button onClick={() => handleDeletion(x.id, x.name)}>delete</button></li>)
+      : list.map((x, index) => <li key={index}>{x.name} {x.number}<button onClick={() => handleDeletion(x.id, x.name)}>delete</button></li>)
     }
   </>
 )}
