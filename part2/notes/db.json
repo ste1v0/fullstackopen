@@ -8,7 +8,7 @@
     {
       "id": 2,
       "content": "Browser can execute only JavaScript",
-      "important": false
+      "important": true
     },
     {
       "id": 3,
@@ -17,52 +17,52 @@
     },
     {
       "content": "get and post",
-      "important": false,
+      "important": true,
       "id": 4
     },
     {
       "content": "nope and lost",
-      "important": false,
+      "important": true,
       "id": 5
     },
     {
       "content": "yes and no",
-      "important": false,
+      "important": true,
       "id": 6
     },
     {
       "content": "and why",
-      "important": false,
+      "important": true,
       "id": 7
     },
     {
       "content": "why so",
-      "important": false,
+      "important": true,
       "id": 8
     },
     {
       "content": "and",
-      "important": true,
+      "important": false,
       "id": 9
     },
     {
       "content": "y",
-      "important": true,
+      "important": false,
       "id": 10
     },
     {
       "content": "This is a new note",
-      "important": false,
+      "important": true,
       "id": 11
     },
     {
       "content": "aight",
-      "important": true,
+      "important": false,
       "id": 12
     },
     {
       "content": "23223",
-      "important": true,
+      "important": false,
       "id": 13
     }
   ]
