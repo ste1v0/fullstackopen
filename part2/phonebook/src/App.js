@@ -56,6 +56,9 @@ const App = () => {
               setList(list.map(n => n.id !== contactToUpdate.id ? n : returnedPhone));
             });
             setErrorMessage(`${newContact} has been updated`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 2500)
         } else {
           alert (`No changes`);
         }
@@ -69,12 +72,18 @@ const App = () => {
           .then(createdPhone => {
             setList(list.concat(createdPhone))
           })
-        setErrorMessage(`${newContact} has been created`)
         setNewContact('');
         setNewPhone('');
+        setErrorMessage(`${newContact} has been created`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 2500)
       }
     } else {
       setErrorMessage(`${newPhone} already exists`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 2500)
     }
   };
   
@@ -85,6 +94,10 @@ const App = () => {
       .remove(id)
       setList(list.filter(x => x.id !== id))
       setErrorMessage(`${name} has been removed`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 2500)
+      
     }
   }
 
