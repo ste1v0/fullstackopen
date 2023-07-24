@@ -2,13 +2,8 @@
   "persons": [
     {
       "name": "John Doe",
-      "number": "+13232",
+      "number": "+132",
       "id": 3
-    },
-    {
-      "name": "Jane Doe",
-      "number": "+1 2",
-      "id": 4
     },
     {
       "name": "Alex Doe",

@@ -11,6 +11,7 @@ const App = () => {
   const [list, setList] = useState([])
   const [newFilter, setNewFilter] = useState('')
   const [filterStatus, setNewFilterStatus] = useState(false)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     phoneService
@@ -54,6 +55,7 @@ const App = () => {
             .then(returnedPhone => {
               setList(list.map(n => n.id !== contactToUpdate.id ? n : returnedPhone));
             });
+            setErrorMessage(`${newContact} has been updated`)
         } else {
           alert (`No changes`);
         }
@@ -65,13 +67,14 @@ const App = () => {
         phoneService
           .create(newEntry)
           .then(createdPhone => {
-            setList(list.concat(createdPhone));
-          });
+            setList(list.concat(createdPhone))
+          })
+        setErrorMessage(`${newContact} has been created`)
         setNewContact('');
         setNewPhone('');
       }
     } else {
-      alert(`Sorry, ${newPhone} already exists`);
+      setErrorMessage(`${newPhone} already exists`)
     }
   };
   
@@ -81,6 +84,7 @@ const App = () => {
       phoneService
       .remove(id)
       setList(list.filter(x => x.id !== id))
+      setErrorMessage(`${name} has been removed`)
     }
   }
 
@@ -89,6 +93,7 @@ const App = () => {
       <h1>
         Phonebook
       </h1>
+      <Error message={errorMessage}></Error>
       filter shown with
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange}></Filter>
       <h1>
@@ -143,6 +148,18 @@ const Persons = ({ filterStatus, filteredArray, list, handleDeletion }) => {
     }
   </>
 )}
+
+const Error = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="notification">
+      {message}
+    </div>
+  )
+}
 
 export default App;
 
