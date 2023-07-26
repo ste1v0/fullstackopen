@@ -53,9 +53,12 @@ const App = () => {
           phoneService
             .update(contactToUpdate.id, changedContact)
             .then(returnedPhone => {
-              setList(list.map(n => n.id !== contactToUpdate.id ? n : returnedPhone));
-            });
-            setErrorMessage(`${newContact} has been updated`)
+              setList(list.map(n => n.id !== contactToUpdate.id ? n : returnedPhone))
+              setErrorMessage(`${newContact} has been updated`)
+            })
+            .catch(error => {
+              setErrorMessage(`The contact was removed from the server`)
+            })
             setTimeout(() => {
               setErrorMessage(null)
             }, 2500)
@@ -87,7 +90,6 @@ const App = () => {
     }
   };
   
-
   const handleDeletion = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
       phoneService
@@ -162,17 +164,20 @@ const Persons = ({ filterStatus, filteredArray, list, handleDeletion }) => {
   </>
 )}
 
-const Error = ({ message }) => {
+const Error = ({ message }) => {  
   if (message === null) {
     return null
   }
 
+  const className = message.includes('has been')
+    ? 'notification'
+    : 'error'
+
   return (
-    <div className="notification">
+    <div className={className}>
       {message}
     </div>
   )
 }
 
 export default App;
-
