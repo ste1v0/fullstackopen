@@ -49,7 +49,7 @@ const App = () => {
         <p>
           {filteredCountries.length > 10
             ? `Too many matches, specify another filter`
-            : countries.filter(x => x.includes(value))
+            : filteredCountries.map((x) => <div>{x}</div>)
           }
         </p>
       </div>
