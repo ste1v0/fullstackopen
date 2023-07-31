@@ -52,6 +52,10 @@ const App = () => {
     const handleInputChange = (event) => {
       setValue(event.target.value)
     }
+
+    const handleButtonClick = (country) => {
+      setValue(country)
+    }
     
     return (
       <div className="App">
@@ -63,7 +67,7 @@ const App = () => {
         {filteredCountries.length > 10
           ? `Too many matches, specify another filter`
           : data === null
-            ? filteredCountries.map(x => <div key={x}> <li>{x}</li></div>)
+            ? filteredCountries.map(x => <div key={x}> <li>{x} <button onClick={() => handleButtonClick(x)}>show</button></li> </div>)
             : <div>
                 <h2>{data.name.common}</h2>
                 <p>capital {data.capital}<br></br>
