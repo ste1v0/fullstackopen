@@ -24,15 +24,27 @@ app.get('/', (request, response) => {
     response.send('Hello World!')
 })
 
+app.get('/api/notes', (request, response) => {
+    response.send(notes)
+})
+
 app.get('/api/notes/:id', (request, response) => {
     const id = Number(request.params.id)
     const note = notes.find(note => note.id === id)
 
     note
      ? response.json(note)
-     : response.status(404).end()
-    
+     : response.status(404).end() 
+})
+
+app.delete('/api/notes/:id', (request, response) => {
+    const id = Number(request.params.id)
+    notes = notes.filter(note => note.id !== id)
+  
+    response.status(204).end()
   })
+
+
 
 const PORT = 3001
 
