@@ -66,6 +66,16 @@ const generateId = () => {
 app.post('/api/persons', (request, response) => {
     const body = request.body
 
+    if (!body.name || !body.number) {
+        return response.status(400).json({
+            error: 'name or number is missing'
+        })
+    } else if (notes.find(n => n.name === body.name)) {
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
+    } else {
+
     const note = {
         name: body.name,
         number: body.number,
@@ -74,6 +84,7 @@ app.post('/api/persons', (request, response) => {
 
     notes = notes.concat(note)
     response.json(note)
+}
 })
 
 const PORT = 3001
