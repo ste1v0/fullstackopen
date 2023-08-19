@@ -26,6 +26,12 @@ let notes = [
     }
 ]
 
+const logger = morgan(':method :url :status :response-time ms - :body')
+
+morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
+
+app.use(logger)
+
 app.get('/', (request, response) => {
     response.send('App is working!')
 })
