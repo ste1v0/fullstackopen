@@ -1,9 +1,12 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 
 const app = express()
 
-let notes = [
+app.use(cors())
+
+let persons = [
     { 
       "id": 1,
       "name": "Arto Hellas", 
@@ -26,6 +29,29 @@ let notes = [
     }
 ]
 
+let notes = [
+    {
+        id: 1,
+        content: 'this is just a test',
+        important: true
+    },
+    {
+        id: 2,
+        content: 'this is just another test',
+        important: true
+    },
+    {
+        id: 3,
+        content: 'this is just a third test',
+        important: true
+    },
+    {
+        id: 4,
+        content: 'and another one',
+        important: false
+    },
+]
+
 const logger = morgan(':method :url :status :response-time ms - :body')
 
 morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
@@ -37,26 +63,30 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
+    response.send(persons)
+})
+
+app.get('/api/notes', (request, response) => {
     response.send(notes)
 })
 
 app.get('/info', (request, response) => {
     const dateTimeObject = new Date();
-    response.send(`Phonebook has info for ${notes.length} people<br/><br/>${dateTimeObject}`)
+    response.send(`Phonebook has info for ${persons.length} people<br/><br/>${dateTimeObject}`)
 })
 
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    const note = notes.find(n => n.id === id)
+    const person = persons.find(n => n.id === id)
 
-    note
-        ? response.json(note)
+    person
+        ? response.json(person)
         : response.status(404).end()
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/notes/:id', (request, response) => {
     const id = Number(request.params.id)
-    notes = notes.filter(n => n.id !== id)
+    persons = persons.filter(n => n.id !== id)
     
     response.status(204).end()
 })
@@ -64,6 +94,13 @@ app.delete('/api/persons/:id', (request, response) => {
 app.use(express.json())
 
 const generateId = () => {
+    const maxId = persons.length > 0       
+        ? Math.max(...persons.map(n => n.id))
+        : 0
+    return Math.floor(maxId + Math.random() * 500)
+}
+
+const generateNoteId = () => {
     const maxId = notes.length > 0       
         ? Math.max(...notes.map(n => n.id))
         : 0
@@ -77,22 +114,47 @@ app.post('/api/persons', (request, response) => {
         return response.status(400).json({
             error: 'name or number is missing'
         })
-    } else if (notes.find(n => n.name === body.name)) {
+    } else if (persons.find(n => n.name === body.name)) {
         return response.status(400).json({
             error: 'name must be unique'
         })
     } else {
 
-    const note = {
+    const person = {
         name: body.name,
         number: body.number,
         id: generateId()
+    }
+
+    persons = persons.concat(person)
+    response.json(person)
+}
+})
+
+app.post('/api/notes', (request, response) => {
+    const body = request.body
+
+    if (!body.content) {
+        return response.status(400).json({
+            error: 'note content is missing'
+        })
+    } else if (notes.find(n => n.content === body.content)) {
+        return response.status(400).json({
+            error: 'note must be unique'
+        })
+    } else {
+
+    const note = {
+        content: body.content,
+        important: body.important,
+        id: generateNoteId()
     }
 
     notes = notes.concat(note)
     response.json(note)
 }
 })
+
 
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
